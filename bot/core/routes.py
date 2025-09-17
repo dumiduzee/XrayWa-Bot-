@@ -1,4 +1,4 @@
-from fastapi import APIRouter,Depends
+from fastapi import APIRouter,Depends,status
 from typing import Annotated
 from supabase import Client
 from bot.supabase.client import getClient
@@ -9,7 +9,7 @@ from bot.core.utils import send_message
 #initialize webhook router
 webhook_router = APIRouter(tags=["webhook-trigger"])
 
-@webhook_router.post("/webhook")
+@webhook_router.post("/webhook",status_code=status.HTTP_200_OK)
 def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
     # phone_number = number.split("@s.whatsapp.net")[0]
     #check incoming phone number is in database. if not add to the database
@@ -20,7 +20,7 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
         #send respond to the the he is banned
         send_message(NUMBER,"YOU ARE BANNED BROOO")
         pass
-    
+    return True
     #continue with the process
     
     
