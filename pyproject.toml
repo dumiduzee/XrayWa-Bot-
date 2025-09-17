@@ -1,0 +1,22 @@
+[project]
+name = "whatsapp-bot"
+version = "0.1.0"
+description = "Multi functional whatsapp bot with xraycore"
+authors = [
+    {name = "dumiduzee"}
+]
+license = {text = "mit"}
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "redis (>=6.4.0,<7.0.0)",
+    "fastapi[standard] (>=0.116.2,<0.117.0)",
+    "requests (>=2.32.5,<3.0.0)",
+    "python-decouple (>=3.8,<4.0)",
+    "pydantic-settings (>=2.10.1,<3.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
