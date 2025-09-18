@@ -1,23 +1,30 @@
-# bot/cache/redis.py
-import redis
 from typing import Tuple
+import redis
+from bot.config.env import env
 
-# Create a single redis client for the app lifetime (adjust host/port/db as needed)
-r = redis.Redis(host="localhost", port=6379, db=0, decode_responses=True)
+
+redis_client = redis.Redis(
+        host=env.REDIS_HOST,
+        port=env.REDIS_PORT,
+        password=env.REDIS_PASSWORD,
+        username=env.REDIS_USERNAME,  
+        decode_responses=True
+    )
+
 
 class Redis:
     @staticmethod
     def cache_setter(key: str, value: str, ex: int | None = None) -> bool:
         """Simple set with optional expire."""
         if ex:
-            r.set(name=key, value=value, ex=ex)
+            redis_client.set(name=key, value=value, ex=ex)
         else:
-            r.set(name=key, value=value)
+            redis_client.set(name=key, value=value)
         return True
 
     @staticmethod
     def cache_getter(key: str):
-        return r.get(name=key)
+        return redis_client.get(name=key)
 
     @staticmethod
     def rate_limit(key: str, limit: int, period_seconds: int) -> Tuple[bool, int]:
@@ -35,10 +42,10 @@ class Redis:
         """
         try:
             # atomic increment
-            current = r.incr(key)
+            current = redis_client.incr(key)
             if current == 1:
                 # first request in this window -> set TTL
-                r.expire(key, period_seconds)
+                redis_client.expire(key, period_seconds)
             allowed = current <= limit
             return allowed, int(current)
         except redis.RedisError as e:
