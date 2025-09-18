@@ -19,7 +19,8 @@ def send_message(number,content):
         res = requests.post(f"{env.WASENDER_BASE_URL}/api/send-message",headers=params,json=data)
         if res.ok:
             return True
-        return
+        print(res.json())
         
-    except Exception:
+    except Exception as e:
+        print(e)
         return False
