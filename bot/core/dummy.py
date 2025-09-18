@@ -1,7 +1,11 @@
 messages = {
     "BANNED_USER": "*You're banned from this platform! Please contact admin to resolve the issue* 😶",
     "RATE_LIMIT_NOTE": "*Whoah! Whoah! Why so fast? Let's slow down a bit, ok!* 🤨",
+    "ZERO_CONFIGS_AVAILABLE":"*You dont't have any configs! use `start` command to create new one*",
+
     "MAIN_MENU_MESSAGE": """
+
+
 *🐉 DragonForce Bot Main Menu*
 
 *Hey there 👋, welcome to DragonForce Bot!*
@@ -19,9 +23,13 @@ messages = {
 *🔟 Contact Admin 👨‍💻 – Reach out for support.*
 
 *⚡ Reply with the number of the option you want to continue.*
+
+
 """,
     "MAIN_MENU_01_MESSAGE":"""
-    *⚙️ DragonForce Bot – Config Creator*
+
+
+*⚙️ DragonForce Bot – Config Creator*
 
 Great choice! 🎉 Let's set up your new config.  
 Please select the type of config you want to create ⬇️
@@ -35,13 +43,24 @@ Please select the type of config you want to create ⬇️
 *7️⃣ Dialog TikTok 🎵 – 295 tiktok package.*
 
 *⚡ Reply with the number of the config you want to create!*
+
+
 """,
-    "MAIN_MENU_02_MESSAGE":"*⚙️ DragonForce Bot – Get all configs*"
+    "MAIN_MENU_02_MESSAGE_WHEN_NO_CONFIGS":"""
+
+
+    *⚙️ DragonForce Bot – Get all configs*
+
+    *Woh!!😳 You don't have any config to get,🫣*
+    *create new config using `start` command -> number 1 🫴*
+
+
+    """
 }
 
     
 
 stages = {
     "MAIN_MENU": "main_menu",
-    "MAIN_MENU_01_MESSAGE":"MAIN_MENU_01_MESSAGE"
+    "MAIN_MENU_01_STAGE":"MAIN_MENU_01_STAGE"
 }

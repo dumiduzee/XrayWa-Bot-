@@ -2,7 +2,7 @@ from fastapi import APIRouter,Depends,status,HTTPException
 from typing import Annotated
 from supabase import Client
 from bot.supabase.client import getClient
-from bot.supabase.handlers import user_status
+from bot.supabase.handlers import get_configs, user_status
 from bot.core.schema import WhatsAppEvent
 from bot.core.utils import send_message
 from bot.core.dummy import messages, stages
@@ -14,18 +14,18 @@ webhook_router = APIRouter(tags=["webhook-trigger"])
 
 @webhook_router.post("/webhook",status_code=status.HTTP_200_OK)
 def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
-    # phone_number = number.split("@s.whatsapp.net")[0]
-    #check incoming phone number is in database. if not add to the database
     MESSAGE = payload.data.messages.message.conversation
     NUMBER = payload.data.messages.key.remoteJid.split("@s.whatsapp.net")[0]
     limit = env.RATE_LIMITER_LIMIT if hasattr(env, "RATE_LIMITER_LIMIT") else 10
     period = env.RATE_LIMITER_WINDOW if hasattr(env, "RATE_LIMITER_WINDOW") else 20
 
     key = f"rl:{NUMBER}" 
+    print(Redis.cache_getter(key))
 
     allowed, current = Redis.rate_limit(key, limit=limit, period_seconds=period)
     if not allowed:
         send_message(NUMBER,messages["RATE_LIMIT_NOTE"])
+        return
         
 
 
@@ -45,7 +45,27 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
         match MESSAGE:
             case "1":
                 send_message(NUMBER,messages["MAIN_MENU_01_MESSAGE"])
-                Redis.cache_setter(f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["MAIN_MENU_01_MESSAGE"])
+                Redis.cache_setter(f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["MAIN_MENU_01_STAGE"])
+
+            case "2":
+                
+                #get all the configs related to a user
+                configs = get_configs(phone=NUMBER,db=db)
+                if configs.data[0]["config"] is None:
+                    send_message(NUMBER,messages["MAIN_MENU_02_MESSAGE_WHEN_NO_CONFIGS"])
+                    Redis.cache_setter(f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["MAIN_MENU"])
+                else:
+                    #get the config and pass it to the user
+                    send_message(NUMBER,
+                    f"""
+                    ⚙️ DragonForce Bot – Get all configs
+                                 
+                    *Here is you config👇*
+                                
+                    *`{configs.data[0]["config"]}`*
+                    """)
+
+                    
 
 
 

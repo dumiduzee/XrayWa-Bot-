@@ -13,4 +13,7 @@ def user_status(phone_number:str,db:Client):
         return False
     return True
     
-    
+#get all the configs if available
+def get_configs(phone:str,db:Client):
+    """get all the configs realted to a user number"""
+    return db.table("botusers").select("config").eq("phoneNumber",phone).execute()    
