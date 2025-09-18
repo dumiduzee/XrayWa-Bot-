@@ -41,7 +41,8 @@ class Redis:
                 r.expire(key, period_seconds)
             allowed = current <= limit
             return allowed, int(current)
-        except redis.RedisError:
+        except redis.RedisError as e:
+            print("redis error",e)
             # In case redis is down, fail open (allow) or you may choose fail-closed.
             # Returning allowed=True avoids blocking users if Redis is not reachable.
             return True, 0
