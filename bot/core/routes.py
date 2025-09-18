@@ -5,7 +5,7 @@ from bot.supabase.client import getClient
 from bot.supabase.handlers import user_status
 from bot.core.schema import WhatsAppEvent
 from bot.core.utils import send_message
-from bot.core.messages import messages
+from bot.core.dummy import messages, stages
 from bot.cache.redis import Redis
 from bot.config.env import env
 
@@ -18,10 +18,6 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
     #check incoming phone number is in database. if not add to the database
     MESSAGE = payload.data.messages.message.conversation
     NUMBER = payload.data.messages.key.remoteJid.split("@s.whatsapp.net")[0]
-
-
-
-    
     limit = env.RATE_LIMITER_LIMIT if hasattr(env, "RATE_LIMITER_LIMIT") else 10
     period = env.RATE_LIMITER_WINDOW if hasattr(env, "RATE_LIMITER_WINDOW") else 20
 
@@ -38,6 +34,21 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
         #send respond to the the he is banned
         send_message(NUMBER,messages["BANNED_USER"])
          #continue with the process
+
+    if MESSAGE == "start":
+        send_message(NUMBER,messages["MAIN_MENU_MESSAGE"])
+        Redis.cache_setter(f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["MAIN_MENU"])
+
+
+    user_stage = Redis.cache_getter(f"stage_{NUMBER}")
+    if user_stage == stages["MAIN_MENU"]:
+        match MESSAGE:
+            case "1":
+                send_message(NUMBER,messages["MAIN_MENU_01_MESSAGE"])
+                Redis.cache_setter(f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["MAIN_MENU_01_MESSAGE"])
+
+
+
     
     
     
