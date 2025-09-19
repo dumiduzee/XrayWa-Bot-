@@ -16,6 +16,7 @@ webhook_router = APIRouter(tags=["webhook-trigger"])
 def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
     MESSAGE = payload.data.messages.message.conversation
     NUMBER = payload.data.messages.key.remoteJid.split("@s.whatsapp.net")[0]
+    print(NUMBER)
     limit = env.RATE_LIMITER_LIMIT if hasattr(env, "RATE_LIMITER_LIMIT") else 10
     period = env.RATE_LIMITER_WINDOW if hasattr(env, "RATE_LIMITER_WINDOW") else 20
 
