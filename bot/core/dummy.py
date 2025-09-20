@@ -61,35 +61,35 @@ Please select the type of config you want to create ⬇️
     *⚙️ DragonForce Bot – Packages and prices*
 
 
-🎁*Dialog router*
+*🎁Dialog router*
 *Package - any work and learn lite package*
 *Lowend Server* - *2500/=*
 *Highend Server* - *5500/=*
 *No speed limit or gb limit*
 *Validity - 12 months*
 
-🎁*Dialog mobile sim*
+*🎁Dialog mobile sim*
 *Package - 132 Social media*
 *Lowend Server* - *2500/=*
 *Highend Server* - *5500/=*
 *Gb limit 15GB & no speed limit*
 *Validity - 12 months*
 
-🎁*Dialog mobile sim*
+*🎁Dialog mobile sim*
 *Package - 277/297/997 tiktok package*
 *Lowend Server* - *2500/=*
 *Highend Server* - *5500/=*
 *no gb limit & no speed limit*
 *Validity - 12 months*
 
-🎁*Mobitel  sim*
+*🎁Mobitel  sim*
 *Package - zoom package (222 best)*
 *Lowend Server* - *2500/=*
 *Highend Server* - *5500/=*
 *Gb limit 25GB limit no speed limit*
 *Validity - 12 months*
 
-🎁*Hutch  sim*
+*🎁Hutch  sim*
 *Package - 505/265 Gaming package*
 *Lowend Server* - *2500/=*
 *Highend Server* - *5500/=*
@@ -97,14 +97,14 @@ Please select the type of config you want to create ⬇️
 *Validity - 12 months*
 
 
-🎁*Airtel  sim*
+*🎁Airtel  sim*
 *Package - zoom package (215 best)*
 *Lowend Server* - *2500/=*
 *Highend Server* - *5500/=*
 *Gb limit 30GB limit no speed limit*
 *Validity - 12 months*
 
-🎁*Airtel  sim special *
+*🎁Airtel  sim special *
 *Package - No need any package*
 *Base Server* - *3000/=* ( You can get lowend ay connection after block the host) 
 *Max Server* - *5500/=* ( You can get highend any connection after block the host)
@@ -112,14 +112,14 @@ Please select the type of config you want to create ⬇️
 *Validity - Untill block*
 
 
-🎁*Slt 4G/Adsl  router*
+*🎁Slt 4G/Adsl  router*
 *Package - zoom package*
 *Lowend Server* - *2500/=*
 *Highend Server* - *5500/=*
 *Gb limit 100GB/30GB limit no speed limit*
 *Validity - 12 months*
 
-🎁*Slt 4G/Adsl  router*
+*🎁Slt 4G/Adsl  router*
 *Package - netflix package*
 *Lowend Server* - *2500/=*
 *Highend Server* - *5500/=*
@@ -127,14 +127,14 @@ Please select the type of config you want to create ⬇️
 *Validity - 12 months*
 
 
-🎁*Slt fibre  router*
+*🎁Slt fibre  router*
 *Package - zoom package*
 *Highend Server* - *5500/=*
 *Gb limit 100GB/30GB limit no speed limit*
 *Validity - 12 months*
 
 
-🎁*Slt fibre  router*
+*🎁Slt fibre  router*
 *Package - netflix package*
 *Highend Server* - *5500/=*
 *no gb limit no speed limit*
