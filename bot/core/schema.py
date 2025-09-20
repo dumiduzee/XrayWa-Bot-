@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 
 class DeviceListMetadata(BaseModel):
-    senderKeyHash: str
+    senderKeyHash: Optional[str] = None
     senderTimestamp: str
     recipientKeyHash: str
     recipientTimestamp: str
