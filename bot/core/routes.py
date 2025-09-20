@@ -16,18 +16,7 @@ webhook_router = APIRouter(tags=["webhook-trigger"])
 def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
     MESSAGE = payload.data.messages.message.conversation
     NUMBER = payload.data.messages.key.remoteJid.split("@s.whatsapp.net")[0]
-    print(NUMBER)
-    limit = env.RATE_LIMITER_LIMIT if hasattr(env, "RATE_LIMITER_LIMIT") else 10
-    period = env.RATE_LIMITER_WINDOW if hasattr(env, "RATE_LIMITER_WINDOW") else 20
-
-    key = f"rl:{NUMBER}" 
-    print(Redis.cache_getter(key))
-
-    allowed, current = Redis.rate_limit(key, limit=limit, period_seconds=period)
-    if not allowed:
-        send_message(NUMBER,messages["RATE_LIMIT_NOTE"])
-        return
-        
+   
 
 
     user = user_status(phone_number=NUMBER,db=db)
@@ -65,6 +54,15 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
                                 
                     *`{configs.data[0]["config"]}`*
                     """)
+            case "3":
+                pass
+
+            case "4":
+                pass
+            case "5":
+                #return all the package details and prices
+                send_message(NUMBER,messages["MAIN_MENU_05_MESSAGE"])
+                Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["MAIN_MENU"])
 
                     
 
