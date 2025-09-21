@@ -124,7 +124,9 @@ def getUsageMarzban(usernameArg:str):
     try:
         response = requests.get(url=url,headers=headers)
         res = response.json()
-        return res["usages"][0]["used_traffic"]
+        byte = int(res["usages"][0]["used_traffic"])
+        gb = byte / (1024 * 1024 * 1024)
+        return gb
     except Exception:
         return False
 
