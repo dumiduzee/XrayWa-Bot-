@@ -17,3 +17,24 @@ def user_status(phone_number:str,db:Client):
 def get_configs(phone:str,db:Client):
     """get all the configs realted to a user number"""
     return db.table("botusers").select("config").eq("phoneNumber",phone).execute()    
+
+
+#Check user already have a config or not
+def CheckUserHaveConfig(number:str,db:Client):
+    """Arguemnt | Number
+        Return type true or false
+    """
+    result = get_configs(phone=number,db=db)
+    print(result)
+    if result.data[0]["config"] == "" or result.data[0]["config"] ==  None:
+        return False
+    return True
+
+
+
+#save config and config username into database 
+def SaveConfig(config:str,username:str,number:str,db:Client)->bool:
+    result = db.table("botusers").update({"config":config,"marzbanUsername":username,"configCount":1}).eq("phoneNumber",number).execute()
+    if len(result.data) == 0:
+        return False
+    return True

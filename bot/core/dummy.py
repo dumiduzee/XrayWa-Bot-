@@ -40,7 +40,6 @@ Please select the type of config you want to create ⬇️
 *4️⃣ Hutch Gaming 🎮 – 505 gaming package.*
 *5️⃣ SLT Zoom 🖥️ – 495 zoom package.*
 *6️⃣ SLT Netflix 🎬 – 1990 netflix package.*
-*7️⃣ Dialog TikTok 🎵 – 295 tiktok package.*
 
 *⚡ Reply with the number of the config you want to create!*
 
@@ -104,7 +103,7 @@ Please select the type of config you want to create ⬇️
 *Gb limit 30GB limit no speed limit*
 *Validity - 12 months*
 
-*🎁Airtel  sim special *
+*🎁Airtel  sim special*
 *Package - No need any package*
 *Base Server* - *3000/=* ( You can get lowend ay connection after block the host) 
 *Max Server* - *5500/=* ( You can get highend any connection after block the host)
@@ -149,4 +148,13 @@ Please select the type of config you want to create ⬇️
 stages = {
     "MAIN_MENU": "main_menu",
     "MAIN_MENU_01_STAGE":"MAIN_MENU_01_STAGE"
+}
+
+PACKAGES = {
+    "DIALOG_ROUTER":"Dialog 443",
+    "MOBITEL":"MOBITEL",
+    "AIRTEL":"Airtel",
+    "HUTCH":"Hutch",
+    "SLT-ZOOM":"Slt Zoom",
+    "SLT-NETFLIX":"Slt Netflix"
 }

@@ -16,6 +16,10 @@ class Env(BaseSettings):
     REDIS_PORT:int = config("REDIS_PORT")
     REDIS_PASSWORD:str = config("REDIS_PASSWORD")
     REDIS_USERNAME:str = config("REDIS_USERNAME")
+    MARZBAN_BASE_DOMAIN:str = config("MARZBAN_BASE_DOMAIN")
+    MARZBAN_PORT:int = config("MARZBAN_PORT")
+    MARZBAN_USERNAME:str = config("MARZBAN_USERNAME")
+    MARZBAN_PASSWORD:str = config("MARZBAN_PASSWORD")
 
 
 env = Env()
