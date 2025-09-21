@@ -47,3 +47,10 @@ def getUserPackage(number:str,db:Client)->str:
     if len(result.data) == 0:
         return False
     return result.data[0]["package"]
+
+
+#delete config
+def deleteConfig(number:str,db:Client):
+    """set user config to null| decrement config count | set package to null"""
+    result = db.table("botusers").update({"config":None,"configCount":0,"marzbanUsername":None,"package":None}).eq("phoneNumber",number).execute()
+    print(result)

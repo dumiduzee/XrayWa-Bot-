@@ -3,8 +3,8 @@ from fastapi import APIRouter,Depends,status,HTTPException
 from typing import Annotated
 from supabase import Client
 from bot.supabase.client import getClient
-from bot.supabase.handlers import (CheckUserHaveConfig, get_configs, getUserPackage, SaveConfig,
-    user_status)
+from bot.supabase.handlers import (CheckUserHaveConfig, deleteConfig, get_configs, getUserPackage,
+    SaveConfig, user_status)
 from bot.core.schema import WhatsAppEvent
 from bot.core.utils import config_Created_message, send_message
 from bot.core.dummy import messages, PACKAGES, stages
@@ -80,20 +80,23 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
                 if not isConfigHave:
                     send_message(NUMBER,content="*You don't have a config to delete! please create a config first😤*")
                     Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
+                    return
                 #get users package
                 package = getUserPackage(number=NUMBER,db=db)
                 if not package:
                     send_message(NUMBER,content="*Something went wrong on our side!😳*")
                     Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
+                    return
                 #asking from user he really want to delete the config
                 send_message(NUMBER,
                              content=(
                                 "*⚙️ DragonForce Bot – Config Delete!! 😍*\n\n"
                                 f"*You have a {package} config.Do you need to delete it ? ⚠️*\n\n"
                                 "*1️⃣ Yes i need to delete!*\n"
-                                "*2️⃣ Hell nooo*\n"
+                                "*2️⃣ Hell nooo!*\n"
                             ))
                 Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["MAIN_MENU_03_STAGE"])
+                return
 
 
 
@@ -182,7 +185,23 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
             case _ :
                 send_message(NUMBER,content="*Invalid choice please choose number between 1 to 6!🖖*")
                 Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
-    
+
+    elif(user_stage == stages["MAIN_MENU_03_STAGE"]):
+        #delete config stage 2 delete or not delete
+        match MESSAGE:
+            case "1":
+                deleteConfig(number=NUMBER,db=db)
+                send_message(NUMBER,content="*Your config deleted!👊*")
+                Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
+            case "2":
+                send_message(NUMBER,content="*Config deletion process intrupted!😶*")
+                Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
+            case _:
+                send_message(NUMBER,content="*Invalid choice please choose number between 1 to 2!🖖*")
+                Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
+
+
+
 
     if MESSAGE == "start" or Redis.cache_getter(key=f"stage_{NUMBER}") == stages["START"]:
         send_message(NUMBER,messages["MAIN_MENU_MESSAGE"])
