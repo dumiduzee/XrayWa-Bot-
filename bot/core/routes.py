@@ -119,11 +119,13 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
                             send_message(number=NUMBER,content="*Something went went wrong in our side!🙂‍↕️*")
                             Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
                         else:
+                            total_quota = 100  # GB
+                            remaining = round(total_quota - usage, 2)
                             send_message(number=NUMBER,content=(
                                 "*⚙️ DragonForce Bot – Config Usage!! 😍*\n\n"
-                                f"*You used {usage}GB out of 100GB.😍*\n\n"
-                                f"*Remaining Quota - {100-usage} 🫴*\n"
-                                "*Expire - In 6 days 🫴*\n"
+                                f"*Used:* {usage} GB out of {total_quota} GB ✅\n"
+                                f"*Remaining:* {remaining} GB 🫴\n"
+                                "*Expire:* In 6 days ⏳"
                             ))
                             Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
 
