@@ -116,12 +116,12 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
                 if config is not None and user is not None:
                     #save config and config username into database
                     result = SaveConfig(config=config,username=username,number=NUMBER,package="Dialog Router",db=db)
-                    if result:
-                        config_Created_message(NUMBER,config,username)
+                    if not result:
+                        send_message(number=NUMBER,content="*Something went wrong on our side!😳*")
                         Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
-                        return
-                    send_message(number=NUMBER,content="*Something went wrong on our side!😳*")
+                    config_Created_message(NUMBER,config,username)
                     Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
+                    
             case "2":
                 #create config via marzban
                 config,username = marzban_config_create(package=PACKAGES["MOBITEL"],username=f"{NUMBER}_{str(uuid.uuid4()).split("-")[2]}")
