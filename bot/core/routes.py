@@ -3,14 +3,14 @@ from fastapi import APIRouter,Depends,status,HTTPException
 from typing import Annotated
 from supabase import Client
 from bot.supabase.client import getClient
-from bot.supabase.handlers import (CheckUserHaveConfig, deleteConfig, get_configs, getUserPackage,
-    SaveConfig, user_status)
+from bot.supabase.handlers import (CheckUserHaveConfig, deleteConfig, get_configs,
+    getMarzbanUsername, getUserPackage, SaveConfig, user_status)
 from bot.core.schema import WhatsAppEvent
 from bot.core.utils import config_Created_message, send_message
 from bot.core.dummy import messages, PACKAGES, stages
 from bot.cache.redis import Redis
 from bot.config.env import env
-from bot.core.marzban_handlers import marzban_config_create, marzban_login
+from bot.core.marzban_handlers import getUsageMarzban, marzban_config_create, marzban_login
 import uuid
 
 #initialize webhook router
@@ -46,7 +46,6 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
         match MESSAGE:
             case "1":
                 #check user already have a config
-                
                 hasConfig = CheckUserHaveConfig(number=NUMBER,db=db)
                 if hasConfig:
                     send_message(NUMBER,content="*You already have a config! you cannot create anymore!! 😤*")
@@ -101,7 +100,33 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
 
 
             case "4":
-                pass
+                #get usage of a config
+                #check user have a config or not
+                haveConfig = CheckUserHaveConfig(number=NUMBER,db=db)
+                if not haveConfig:
+                    send_message(number=NUMBER,content="*You don't have a config to check usage🙂‍↕️*")
+                    Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
+                else:
+                #get marzban username of the user
+                    username = getMarzbanUsername(number=NUMBER,db=db)
+                    if not username:
+                        send_message(number=NUMBER,content="*Something went went wrong in our side!🙂‍↕️*")
+                        Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
+                    else:
+                        #get the username and check via marzban pannel usage
+                        usage = getUsageMarzban(usernameArg=username)
+                        if not usage:
+                            send_message(number=NUMBER,content="*Something went went wrong in our side!🙂‍↕️*")
+                            Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
+                        else:
+                            send_message(number=NUMBER,content=(
+                                "*⚙️ DragonForce Bot – Config Usage!! 😍*\n\n"
+                                f"*You used {usage}GB out of 100GB.😍*\n\n"
+                                f"*Remaining Quota - {100-int(usage)} 🫴*\n"
+                                "*Expire - In 6 days 🫴*\n"
+                            ))
+                            Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
+
             case "5":
                 #return all the package details and prices
                 send_message(NUMBER,messages["MAIN_MENU_05_MESSAGE"])

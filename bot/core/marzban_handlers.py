@@ -100,3 +100,37 @@ def marzban_config_create(package:str,username:str):
     except Exception as e:
         return None,None
         print(e)
+
+
+
+#check usage of a user with help of username
+def getUsageMarzban(usernameArg:str):
+    #get token in redis database
+    token = Redis.cache_getter(key="marzban_token")
+    if not token:
+        #if not available it re fetch via marz login function
+        marzban_login()
+    token = Redis.cache_getter(key="marzban_token")
+
+    url = f"https://{domain}:{port}/api/user/{usernameArg}/usage"
+    print(url)
+    print(usernameArg)
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {token}"
+    }
+
+    try:
+        response = requests.get(url=url,headers=headers)
+        res = response.json()
+        return res["usages"][0]["used_traffic"]
+    except Exception:
+        return False
+
+    
+  
+      
+
+    
+    
