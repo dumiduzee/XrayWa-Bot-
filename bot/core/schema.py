@@ -1,26 +1,38 @@
 from pydantic import BaseModel
 from typing import Optional
 
+
 class DeviceListMetadata(BaseModel):
     senderKeyHash: Optional[str] = None
-    senderTimestamp: str
-    recipientKeyHash: str
-    recipientTimestamp: str
+    senderTimestamp: Optional[str] = None
+    recipientKeyHash: Optional[str] = None
+    recipientTimestamp: Optional[str] = None
+
 
 class MessageContextInfo(BaseModel):
-    deviceListMetadata: DeviceListMetadata
-    deviceListMetadataVersion: int
-    messageSecret: str
+    deviceListMetadata: Optional[DeviceListMetadata] = None
+    deviceListMetadataVersion: Optional[int] = None
+    messageSecret: Optional[str] = None
+
+
+class ExtendedTextMessage(BaseModel):
+    text: str
+    previewType: Optional[str] = None
+    inviteLinkGroupTypeV2: Optional[str] = None
+
 
 class MessageContent(BaseModel):
-    conversation: str
-    messageContextInfo: MessageContextInfo
+    conversation: Optional[str] = None
+    extendedTextMessage: Optional[ExtendedTextMessage] = None
+    messageContextInfo: Optional[MessageContextInfo] = None
+
 
 class MessageKey(BaseModel):
     remoteJid: str
     fromMe: bool
     id: str
-    senderLid: Optional[str]  # optional in case it’s missing sometimes
+    senderLid: Optional[str] = None  # sometimes missing
+
 
 class Messages(BaseModel):
     key: MessageKey
@@ -31,8 +43,10 @@ class Messages(BaseModel):
     remoteJid: str
     id: str
 
+
 class Data(BaseModel):
     messages: Messages
+
 
 class WhatsAppEvent(BaseModel):
     event: str

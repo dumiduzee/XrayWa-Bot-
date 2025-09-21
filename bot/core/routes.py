@@ -17,7 +17,16 @@ webhook_router = APIRouter(tags=["webhook-trigger"])
 
 @webhook_router.post("/webhook",status_code=status.HTTP_200_OK)
 def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
-    MESSAGE = payload.data.messages.message.conversation
+    msg = payload.data.messages.message
+
+    # Handle both conversation and extendedTextMessage
+    if msg.conversation:
+        MESSAGE = msg.conversation
+    elif msg.extendedTextMessage:
+        MESSAGE = msg.extendedTextMessage.text
+    else:
+        MESSAGE = None  # fallback if unknown message type
+
     NUMBER = payload.data.messages.key.remoteJid.split("@s.whatsapp.net")[0]
    
 
