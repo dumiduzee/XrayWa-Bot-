@@ -3,7 +3,8 @@ from fastapi import APIRouter,Depends,status,HTTPException
 from typing import Annotated
 from supabase import Client
 from bot.supabase.client import getClient
-from bot.supabase.handlers import CheckUserHaveConfig, get_configs, SaveConfig, user_status
+from bot.supabase.handlers import (CheckUserHaveConfig, get_configs, getUserPackage, SaveConfig,
+    user_status)
 from bot.core.schema import WhatsAppEvent
 from bot.core.utils import config_Created_message, send_message
 from bot.core.dummy import messages, PACKAGES, stages
@@ -74,7 +75,27 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
                     """)
                     Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
             case "3":
-                pass
+                #delete config user have
+                isConfigHave = CheckUserHaveConfig(number=NUMBER,db=db)
+                if not isConfigHave:
+                    send_message(NUMBER,content="*You don't have a config to delete! please create a config first😤*")
+                    Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
+                #get users package
+                package = getUserPackage(number=NUMBER,db=db)
+                if not package:
+                    send_message(NUMBER,content="*Something went wrong on our side!😳*")
+                    Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
+                #asking from user he really want to delete the config
+                send_message(NUMBER,
+                             content=(
+                                "*⚙️ DragonForce Bot – Config Delete!! 😍*\n\n"
+                                f"*You have a {package}.Do you need to delete it ? ⚠️*\n\n"
+                                "• *1️⃣ Yes i need to delete!*\n"
+                                "• *2️⃣ Hell nooo*\n"
+                            ))
+                Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["MAIN_MENU_03_STAGE"])
+
+
 
             case "4":
                 pass
@@ -91,7 +112,7 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
                 config,username = marzban_config_create(package=PACKAGES["DIALOG_ROUTER"],username=f"{NUMBER}_{str(uuid.uuid4()).split("-")[2]}")
                 if config is not None and user is not None:
                     #save config and config username into database
-                    result = SaveConfig(config=config,username=username,number=NUMBER,db=db)
+                    result = SaveConfig(config=config,username=username,number=NUMBER,package="Dialog Router",db=db)
                     if result:
                         config_Created_message(NUMBER,config,username)
                         Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
@@ -103,7 +124,7 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
                 config,username = marzban_config_create(package=PACKAGES["MOBITEL"],username=f"{NUMBER}_{str(uuid.uuid4()).split("-")[2]}")
                 if config is not None and user is not None:
                     #save config and config username into database
-                    result = SaveConfig(config=config,username=username,number=NUMBER,db=db)
+                    result = SaveConfig(config=config,username=username,number=NUMBER,package="Mobitel",db=db)
                     if result:
                         config_Created_message(NUMBER,config,username)
                         Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
@@ -115,7 +136,7 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
                 config,username = marzban_config_create(package=PACKAGES["AIRTEL"],username=f"{NUMBER}_{str(uuid.uuid4()).split("-")[2]}")
                 if config is not None and user is not None:
                     #save config and config username into database
-                    result = SaveConfig(config=config,username=username,number=NUMBER,db=db)
+                    result = SaveConfig(config=config,username=username,number=NUMBER,package="Airtel",db=db)
                     if result:
                         config_Created_message(NUMBER,config,username)
                         Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
@@ -127,7 +148,7 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
                 config,username = marzban_config_create(package=PACKAGES["HUTCH"],username=f"{NUMBER}_{str(uuid.uuid4()).split("-")[2]}")
                 if config is not None and user is not None:
                     #save config and config username into database
-                    result = SaveConfig(config=config,username=username,number=NUMBER,db=db)
+                    result = SaveConfig(config=config,username=username,number=NUMBER,package="Hutch",db=db)
                     if result:
                         config_Created_message(NUMBER,config,username)
                         Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
@@ -139,7 +160,7 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
                 config,username = marzban_config_create(package=PACKAGES["SLT-ZOOM"],username=f"{NUMBER}_{str(uuid.uuid4()).split("-")[2]}")
                 if config is not None and user is not None:
                     #save config and config username into database
-                    result = SaveConfig(config=config,username=username,number=NUMBER,db=db)
+                    result = SaveConfig(config=config,username=username,number=NUMBER,package="Slt zoom",db=db)
                     if result:
                         config_Created_message(NUMBER,config,username)
                         Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
@@ -151,7 +172,7 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
                 config,username = marzban_config_create(package=PACKAGES["SLT-NETFLIX"],username=f"{NUMBER}_{str(uuid.uuid4()).split("-")[2]}")
                 if config is not None and user is not None:
                     #save config and config username into database
-                    result = SaveConfig(config=config,username=username,number=NUMBER,db=db)
+                    result = SaveConfig(config=config,username=username,number=NUMBER,package="Slt Netflix",db=db)
                     if result:
                         config_Created_message(NUMBER,config,username)
                         Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])

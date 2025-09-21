@@ -32,9 +32,18 @@ def CheckUserHaveConfig(number:str,db:Client):
 
 
 
-#save config and config username into database 
-def SaveConfig(config:str,username:str,number:str,db:Client)->bool:
-    result = db.table("botusers").update({"config":config,"marzbanUsername":username,"configCount":1}).eq("phoneNumber",number).execute()
+#save config and config username/package into database 
+def SaveConfig(config:str,username:str,number:str,package:str,db:Client)->bool:
+    result = db.table("botusers").update({"config":config,"marzbanUsername":username,"configCount":1,"package":package}).eq("phoneNumber",number).execute()
     if len(result.data) == 0:
         return False
     return True
+
+
+#get user's package
+def getUserPackage(number:str,db:Client)->str:
+    """Return users package type"""
+    result = db.table("botusers").select("package").eq("phoneNumber",number).execute()
+    if len(result.data) == 0:
+        return False
+    return result.data[0]

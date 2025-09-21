@@ -148,7 +148,8 @@ Please select the type of config you want to create ⬇️
 stages = {
     "START":"START",
     "MAIN_MENU": "main_menu",
-    "MAIN_MENU_01_STAGE":"MAIN_MENU_01_STAGE"
+    "MAIN_MENU_01_STAGE":"MAIN_MENU_01_STAGE",
+    "MAIN_MENU_03_STAGE":"MAIN_MENU_03_STAGE"
 }
 
 PACKAGES = {
