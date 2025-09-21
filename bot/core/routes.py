@@ -89,9 +89,9 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
                 send_message(NUMBER,
                              content=(
                                 "*⚙️ DragonForce Bot – Config Delete!! 😍*\n\n"
-                                f"*You have a {package}.Do you need to delete it ? ⚠️*\n\n"
-                                "• *1️⃣ Yes i need to delete!*\n"
-                                "• *2️⃣ Hell nooo*\n"
+                                f"*You have a {package} config.Do you need to delete it ? ⚠️*\n\n"
+                                "*1️⃣ Yes i need to delete!*\n"
+                                "*2️⃣ Hell nooo*\n"
                             ))
                 Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["MAIN_MENU_03_STAGE"])
 

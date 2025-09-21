@@ -46,4 +46,4 @@ def getUserPackage(number:str,db:Client)->str:
     result = db.table("botusers").select("package").eq("phoneNumber",number).execute()
     if len(result.data) == 0:
         return False
-    return result.data[0]
+    return result.data[0]["package"]
