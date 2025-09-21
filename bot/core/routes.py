@@ -37,7 +37,11 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
         send_message(NUMBER,messages["BANNED_USER"])
          #continue with the process
 
-    if MESSAGE == "start" or stages["INITIAL_START"]==Redis.cache_getter(key=NUMBER):
+
+    
+
+
+    if MESSAGE == "start" or stages["START"] == Redis.cache_getter(key=NUMBER):
         send_message(NUMBER,messages["MAIN_MENU_MESSAGE"])
         Redis.cache_setter(f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["MAIN_MENU"])
 
