@@ -36,9 +36,8 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
          #continue with the process
 
 
-    if MESSAGE == "start" or Redis.cache_getter(key=f"stage_{NUMBER}") == stages["START"]:
-        send_message(NUMBER,messages["MAIN_MENU_MESSAGE"])
-        Redis.cache_setter(f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["MAIN_MENU"])
+    
+
 
 
     user_stage = Redis.cache_getter(f"stage_{NUMBER}")
@@ -162,7 +161,11 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
             case _ :
                 send_message(NUMBER,content="*Invalid choice please choose number between 1 to 6!🖖*")
                 Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
-            
+    
+
+    if MESSAGE == "start" or Redis.cache_getter(key=f"stage_{NUMBER}") == stages["START"]:
+        send_message(NUMBER,messages["MAIN_MENU_MESSAGE"])
+        Redis.cache_setter(f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["MAIN_MENU"])
 
                     
 
