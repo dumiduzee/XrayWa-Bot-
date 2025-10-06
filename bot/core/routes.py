@@ -10,7 +10,7 @@ from bot.core.utils import config_Created_message, send_message
 from bot.core.dummy import messages, PACKAGES, stages
 from bot.cache.redis import Redis
 from bot.config.env import env
-from bot.core.marzban_handlers import getUsageMarzban, marzban_config_create, marzban_login
+from bot.core.marzban_handlers import getUsageMarzban, marzban_config_create, marzban_login,checkUserConfigExpire
 import uuid
 
 #initialize webhook router
@@ -29,17 +29,12 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
         MESSAGE = None  # fallback if unknown message type
 
     NUMBER = payload.data.messages.key.remoteJid.split("@s.whatsapp.net")[0]
-   
+
     user = user_status(phone_number=NUMBER,db=db)
     if user is False:
         #send respond to the the he is banned
         send_message(NUMBER,messages["BANNED_USER"])
          #continue with the process
-
-
-    
-
-
 
     user_stage = Redis.cache_getter(f"stage_{NUMBER}")
     if user_stage == stages["MAIN_MENU"]:
@@ -56,7 +51,7 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
                     Redis.cache_setter(f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["MAIN_MENU_01_STAGE"])
 
             case "2":
-                
+
                 #get all the configs related to a user
                 configs = get_configs(phone=NUMBER,db=db)
                 if configs.data[0]["config"] is None:
@@ -67,9 +62,9 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
                     send_message(NUMBER,
                     f"""
                     ⚙️ DragonForce Bot – Get all configs
-                                 
+
                     *Here is you config👇*
-                                
+
                     *`{configs.data[0]["config"]}`*
                     """)
                     Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
@@ -109,13 +104,14 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
                 else:
                 #get marzban username of the user
                     username = getMarzbanUsername(number=NUMBER,db=db)
-                    if not username:
+                    expires_in = checkUserConfigExpire(usernameArg=username)
+                    if not username or expires_in is False:
                         send_message(number=NUMBER,content="*Something went went wrong in our side!🙂‍↕️*")
                         Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
                     else:
                         #get the username and check via marzban pannel usage
                         usage = getUsageMarzban(usernameArg=username)
-                        if not usage:
+                        if usage is False:
                             send_message(number=NUMBER,content="*Something went went wrong in our side!🙂‍↕️*")
                             Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
                         else:
@@ -125,7 +121,7 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
                                 "*⚙️ DragonForce Bot – Config Usage!! 😍*\n\n"
                                 f"*Used:* {usage} GB out of {total_quota} GB ✅\n"
                                 f"*Remaining:* {remaining} GB 🫴\n"
-                                "*Expire:* In 6 days ⏳"
+                                f"*Expire:*  {expires_in}⏳"
                             ))
                             Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
 
@@ -133,6 +129,9 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
                 #return all the package details and prices
                 send_message(NUMBER,messages["MAIN_MENU_05_MESSAGE"])
                 Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
+
+            case _ :
+                send_message(NUMBER,content="*Invalid choice please choose number between 1 to 5!🖖*")
 
 
     elif(user_stage == stages["MAIN_MENU_01_STAGE"]):
@@ -148,7 +147,7 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
                         Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
                     config_Created_message(NUMBER,config,username)
                     Redis.cache_setter(key=f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["START"])
-                    
+
             case "2":
                 #create config via marzban
                 config,username = marzban_config_create(package=PACKAGES["MOBITEL"],username=f"{NUMBER}_{str(uuid.uuid4()).split("-")[2]}")
@@ -234,11 +233,11 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
         send_message(NUMBER,messages["MAIN_MENU_MESSAGE"])
         Redis.cache_setter(f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["MAIN_MENU"])
 
-                    
 
 
 
-    
-    
-    
+
+
+
+
 

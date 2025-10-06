@@ -11,7 +11,7 @@ password = env.MARZBAN_PASSWORD
 
 #Login to the pannel and save session in redis
 def marzban_login():
-    
+
     url = f"https://{domain}:{port}/api/admin/token"
 
 
@@ -47,7 +47,7 @@ def marzban_config_create(package:str,username:str):
     #get the token from redis
     token  = Redis.cache_getter(key="marzban_token")
     id = str(uuid.uuid4())
-    #get now time 
+    #get now time
     now_utc = datetime.now(timezone.utc)
     #calculate 7nth date utc timestamp for expire time
     seventh_day_timestamp = int((now_utc + timedelta(days=7)).timestamp())
@@ -89,7 +89,7 @@ def marzban_config_create(package:str,username:str):
         "Content-Type": "application/json",
         "Authorization": f"Bearer {token}"
     }
-    
+
     try:
         response = requests.post(url=url,json=data,headers=headers)
         if response.ok:
@@ -130,9 +130,42 @@ def getUsageMarzban(usernameArg:str):
     except Exception:
         return False
 
-    
-  
-      
 
-    
-    
+#check users config expie date and time
+def checkUserConfigExpire(usernameArg:str):
+    #get token in redis database
+    token = Redis.cache_getter(key="marzban_token")
+    if not token:
+        #if not available it re fetch via marz login function
+        marzban_login()
+    token = Redis.cache_getter(key="marzban_token")
+
+    url = f"https://{domain}:{port}/api/user/{usernameArg}"
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {token}"
+    }
+
+    try:
+        response = requests.get(url=url,headers=headers)
+        res = response.json()
+        expire_timestamp = int(res["expire"])
+        now_timestamp = int(datetime.now().timestamp())
+        remaining_seconds = expire_timestamp - now_timestamp
+        if remaining_seconds <= 0:
+            return "Already expired!"
+        # Convert seconds to days, hours, minutes
+        days = remaining_seconds // (24 * 3600)
+        hours = (remaining_seconds % (24 * 3600)) // 3600
+        minutes = (remaining_seconds % 3600) // 60
+
+        return f"{days} days, {hours} hours, {minutes} minutes remaining"
+    except Exception as e:
+        print(e)
+        return False
+
+
+
+
+
