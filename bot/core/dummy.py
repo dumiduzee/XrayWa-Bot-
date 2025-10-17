@@ -3,6 +3,8 @@ messages = {
     "RATE_LIMIT_NOTE": "*Whoah! Whoah! Why so fast? Let's slow down a bit, ok!* 🤨",
     "ZERO_CONFIGS_AVAILABLE":"*You dont't have any configs! use `start` command to create new one*",
 
+    "MORE_INFO_MESSAGE":"What details you want to know? \n\n1. Packages and Prices \n2. Tutorial Video \n3. Contact Admin",
+
     "MAIN_MENU_MESSAGE": """
 
 
@@ -31,7 +33,7 @@ messages = {
 
 *⚙️ DragonForce Bot – Config Creator*
 
-Great choice! 🎉 Let's set up your new config.  
+Great choice! 🎉 Let's set up your new config.
 Please select the type of config you want to create ⬇️
 
 *1️⃣ Dialog Router Config 📡 – 724 zoom package.*
@@ -105,7 +107,7 @@ Please select the type of config you want to create ⬇️
 
 *🎁Airtel  sim special*
 *Package - No need any package*
-*Base Server* - *3000/=* ( You can get lowend ay connection after block the host) 
+*Base Server* - *3000/=* ( You can get lowend ay connection after block the host)
 *Max Server* - *5500/=* ( You can get highend any connection after block the host)
 *No Gb limit   no speed limit*
 *Validity - Untill block*
@@ -143,7 +145,7 @@ Please select the type of config you want to create ⬇️
     """
 }
 
-    
+
 
 stages = {
     "START":"START",
