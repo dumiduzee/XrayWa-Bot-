@@ -232,6 +232,8 @@ def webhook_handler(payload:WhatsAppEvent,db=Depends(getClient)):
     if MESSAGE == "start" or Redis.cache_getter(key=f"stage_{NUMBER}") == stages["START"]:
         send_message(NUMBER,messages["MAIN_MENU_MESSAGE"])
         Redis.cache_setter(f"stage_{NUMBER}",ex=env.REDIS_EXPIRE_TIME,value=stages["MAIN_MENU"])
+    if MESSAGE == "More Info":
+        send_message(NUMBER,messages["MORE_INFO_MESSAGE"]);
 
 
 
